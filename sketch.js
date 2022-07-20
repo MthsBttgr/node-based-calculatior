@@ -49,14 +49,6 @@ function draw()
             LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
 
             console.log(OperationsOnScreen[z].inp[o].connectedTo, OperationsOnScreen[z].id)
-/*
-            if (Dependencies[OperationsOnScreen[z].id] === undefined)
-            {
-              Dependencies[OperationsOnScreen[z].id] = [];
-            }
-            
-            Dependencies[OperationsOnScreen[z].id][o] = OperationsOnScreen[i].id;
-            */
           }
           if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
           {
