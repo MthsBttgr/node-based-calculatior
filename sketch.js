@@ -1,19 +1,14 @@
 OperationsOnScreen = []
-Dependencies = []
-
 LinesBetweenOps = []
 
 let drawingLine = false;
+let generatedOperator = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke()
 
-  OperationsOnScreen[0] = new Plus(50,50,0)
-  OperationsOnScreen[1] = new Minus(250,50,1)
-  OperationsOnScreen[2] = new Mult(50,250,2)
-  OperationsOnScreen[3] = new Div(250,250,3)
-  OperationsOnScreen[4] = new Input(500,50,4)
+  OperationsOnScreen[0] = new Result(500,250,5)
 }
 
 function draw() 
@@ -47,8 +42,6 @@ function draw()
             OperationsOnScreen[z].inp[o].connected = true;
             OperationsOnScreen[z].inp[o].connectedTo = OperationsOnScreen[i].id
             LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
-
-            console.log(OperationsOnScreen[z].inp[o].connectedTo, OperationsOnScreen[z].id)
           }
           if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
           {
@@ -67,5 +60,68 @@ function draw()
     noStroke()
   }
 
-  console.log(OperationsOnScreen[0].compute())
+  fill(100)
+  rect(0,height - 100, width, 100)
+
+  GenerateOperator(20, height - 75, 100, 50, color(255,100,100), 'Plus')
+  GenerateOperator(140, height - 75, 100, 50, color(30,255,60), 'Minus')
+  GenerateOperator(260, height - 75, 100, 50, color(255,255,60), 'Multiply')
+  GenerateOperator(380, height - 75, 100, 50, color(30,255,255), 'Divide')
+  GenerateOperator(500, height - 75, 100, 50, color(255,70,255), 'Input')
+  GenerateOperator(620, height - 75, 100, 50, color(255), 'Result')
+
+  if (!mouseIsPressed)
+  {
+    generatedOperator = false;
+  }
+}
+
+function GenerateOperator(x,y,w,h,col,type)
+{
+  let originX = width / 2 + random(-50, 50)
+  let originY = height / 2 + random(-50,50)
+  fill(col)
+
+  if (mouseOverRect(x,y,w,h))
+  {
+    fill(col.levels[0] * 0.8, col.levels[1] * 0.8, col.levels[2] * 0.8)
+
+    if(mouseIsPressed && !generatedOperator)
+    {
+      generatedOperator = true;
+      switch (type)
+      {
+        case "Plus":
+          OperationsOnScreen[OperationsOnScreen.length] = new Plus(originX, originY, OperationsOnScreen.length)
+          break;
+        case "Minus":
+          OperationsOnScreen[OperationsOnScreen.length] = new Minus(originX, originY, OperationsOnScreen.length)
+          break;
+        case "Multiply":
+          OperationsOnScreen[OperationsOnScreen.length] = new Mult(originX, originY, OperationsOnScreen.length)
+          break;
+        case "Divide":
+          OperationsOnScreen[OperationsOnScreen.length] = new Div(originX, originY, OperationsOnScreen.length)
+          break;
+        case "Input":
+          OperationsOnScreen[OperationsOnScreen.length] = new Input(originX, originY, OperationsOnScreen.length)
+          break;
+        case "Result":
+          OperationsOnScreen[OperationsOnScreen.length] = new Result(originX, originY, OperationsOnScreen.length)
+      }
+    }
+  }
+  
+  rect(x,y,w,h)
+  push()
+  fill(0)
+  text(type, x + w/2, y + h/2)
+}
+
+function mouseOverRect(x,y,w,h)
+{
+  if (mouseX > x && mouseX < (x + w) && mouseY > y && mouseY < (y + h))
+  {
+    return true;
+  }
 }

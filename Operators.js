@@ -201,3 +201,58 @@ class Input extends Operator
     return float(this.inp.value())
   }
 }
+class Result extends Operator
+{
+  constructor(x,y,id)
+  {
+    super(x,y,id)
+
+    this.col = color(255)
+    this.tekst = "Result:"
+
+    this.inp = [new BallConnector(this.x, this.y + this.h / 2)]
+  }
+
+  showOp()
+  {
+    fill(this.col)
+    rect(this.x,this.y,this.w,this.h)
+
+    fill(0)
+    text(this.tekst, this.x + 30, this.y + 10)
+
+    //drawing input point
+    this.inp[0].showBall(this.x, this.y + this.h / 2)
+    //
+
+    push()
+    if (this.inp[0].connected)
+    {
+        textAlign(LEFT, TOP)
+        fill(0)
+        let result = OperationsOnScreen[this.inp[0].connectedTo].compute()
+        text(result, this.x + 5, this.y + 30)
+    }
+    pop()
+
+    //moving the operator correctly
+    if (this.mouseOverOp() && !this.isMoving)
+    {
+      this.mousediffposX = this.x - mouseX;
+      this.mousediffposY = this.y - mouseY;
+    }
+    
+    if(!mouseIsPressed)
+    {
+      this.isMoving = false;
+    }
+
+    if((mouseIsPressed && this.mouseOverOp()) || this.isMoving)
+    {
+      this.isMoving = true;
+      this.x = mouseX + this.mousediffposX;
+      this.y = mouseY + this.mousediffposY;
+    }
+    //
+  }
+}
