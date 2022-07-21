@@ -8,7 +8,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke()
 
-  OperationsOnScreen[0] = new Result(500,250,5)
+  OperationsOnScreen[0] = new Result(500,250,0)
 }
 
 function draw() 
@@ -109,6 +109,8 @@ function GenerateOperator(x,y,w,h,col,type)
         case "Result":
           OperationsOnScreen[OperationsOnScreen.length] = new Result(originX, originY, OperationsOnScreen.length)
       }
+
+      console.log(OperationsOnScreen)
     }
   }
   
