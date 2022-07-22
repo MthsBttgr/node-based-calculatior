@@ -14,6 +14,7 @@ function setup() {
 function draw() 
 {
   background(50);
+  frameRate(60)
 
   for (let i = 0; i < OperationsOnScreen.length; i++)
   {
@@ -24,13 +25,20 @@ function draw()
       OperationsOnScreen[i].drawingLine = true;
       stroke(100)
       strokeWeight(3)
-      line(OperationsOnScreen[i].out.x, OperationsOnScreen[i].out.y, mouseX, mouseY)
-      noStroke()
+      noFill()
+      let d = dist(OperationsOnScreen[i].out.x, 0, mouseX, 0)
+      let p1 = {x: OperationsOnScreen[i].out.x, y: OperationsOnScreen[i].out.y}
+      let p2 = {x: mouseX, y: mouseY}
+      
 
       for (let z = 0; z < OperationsOnScreen.length; z++)
       {
         for (let o = 0; o < OperationsOnScreen[z].inp.length; o++)
         {
+          if(OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
+          {
+            p2 = {x: OperationsOnScreen[z].inp[o].x, y: OperationsOnScreen[z].inp[o].y}
+          }
           if (mouseIsPressed && OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
           {
             if (z === i)
@@ -41,6 +49,7 @@ function draw()
             OperationsOnScreen[i].drawingLine = false;
             OperationsOnScreen[z].inp[o].connected = true;
             OperationsOnScreen[z].inp[o].connectedTo = OperationsOnScreen[i].id
+            //OperationsOnScreen[i].out.connectedTo = OperationsOnScreen[z].id;
             LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
           }
           if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
@@ -49,14 +58,20 @@ function draw()
           }
         }
       }
+      bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
+      noStroke()
     }
   }
 
   for (let i = 0; i < LinesBetweenOps.length; i++)
   {
     stroke(100)
-    line(OperationsOnScreen[LinesBetweenOps[i][0]].out.x, OperationsOnScreen[LinesBetweenOps[i][0]].out.y, 
-      OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].y)
+    noFill()
+    let d = dist(OperationsOnScreen[LinesBetweenOps[i][0]].out.x, 0, OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, 0)
+    let p1 = {x: OperationsOnScreen[LinesBetweenOps[i][0]].out.x, y: OperationsOnScreen[LinesBetweenOps[i][0]].out.y}
+    let p2 = {x:OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, y: OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].y}
+    
+    bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
     noStroke()
   }
 
@@ -114,8 +129,7 @@ function GenerateOperator(x,y,w,h,col,type)
     }
   }
   
-  rect(x,y,w,h)
-  push()
+  rect(x,y,w,h, 5)
   fill(0)
   text(type, x + w/2, y + h/2)
 }

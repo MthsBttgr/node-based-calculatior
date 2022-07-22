@@ -15,7 +15,7 @@ class BallConnector
     }
     mouseOverBall()
     {
-        if(dist(mouseX, mouseY, this.x, this.y) < this.d/2)
+        if(dist(mouseX, mouseY, this.x, this.y) < this.d)
         {
             return true;
         }

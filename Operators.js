@@ -39,7 +39,7 @@ class Operator
   showOp()
   {
     fill(this.col)
-    rect(this.x,this.y,this.w,this.h)
+    rect(this.x,this.y,this.w,this.h, 5)
 
     fill(0)
     text(this.tekst, this.x + this.w/2, this.y + this.h / 2)
@@ -163,7 +163,7 @@ class Input extends Operator
   showOp()
   {
     fill(this.col)
-    rect(this.x,this.y,this.w,this.h)
+    rect(this.x,this.y,this.w,this.h, 5)
 
     fill(0)
     text(this.tekst, this.x + 30, this.y + 10)
@@ -216,7 +216,7 @@ class Result extends Operator
   showOp()
   {
     fill(this.col)
-    rect(this.x,this.y,this.w,this.h)
+    rect(this.x,this.y,this.w,this.h, 5)
 
     fill(0)
     text(this.tekst, this.x + 30, this.y + 10)
