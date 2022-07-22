@@ -18,48 +18,57 @@ function draw()
 
   for (let i = 0; i < OperationsOnScreen.length; i++)
   {
-    OperationsOnScreen[i].showOp()
-    
-    if (OperationsOnScreen[i].out.mouseOverBall() && mouseIsPressed || OperationsOnScreen[i].drawingLine)
+    if (OperationsOnScreen[i] == undefined)
     {
-      OperationsOnScreen[i].drawingLine = true;
-      stroke(100)
-      strokeWeight(3)
-      noFill()
-      let d = dist(OperationsOnScreen[i].out.x, 0, mouseX, 0)
-      let p1 = {x: OperationsOnScreen[i].out.x, y: OperationsOnScreen[i].out.y}
-      let p2 = {x: mouseX, y: mouseY}
-      
-
-      for (let z = 0; z < OperationsOnScreen.length; z++)
+      break;
+    }
+    if(OperationsOnScreen[i] != undefined)
+    {
+      OperationsOnScreen[i].showOp()
+      if (OperationsOnScreen[i].out.mouseOverBall() && mouseIsPressed || OperationsOnScreen[i].drawingLine)
       {
-        for (let o = 0; o < OperationsOnScreen[z].inp.length; o++)
-        {
-          if(OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
-          {
-            p2 = {x: OperationsOnScreen[z].inp[o].x, y: OperationsOnScreen[z].inp[o].y}
-          }
-          if (mouseIsPressed && OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
-          {
-            if (z === i)
-            {
-              break;
-            }
+        OperationsOnScreen[i].drawingLine = true;
+        stroke(100)
+        strokeWeight(3)
+        noFill()
+        let d = dist(OperationsOnScreen[i].out.x, 0, mouseX, 0)
+        let p1 = {x: OperationsOnScreen[i].out.x, y: OperationsOnScreen[i].out.y}
+        let p2 = {x: mouseX, y: mouseY}
 
-            OperationsOnScreen[i].drawingLine = false;
-            OperationsOnScreen[z].inp[o].connected = true;
-            OperationsOnScreen[z].inp[o].connectedTo = OperationsOnScreen[i].id
-            //OperationsOnScreen[i].out.connectedTo = OperationsOnScreen[z].id;
-            LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
-          }
-          if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
+
+        for (let z = 0; z < OperationsOnScreen.length; z++)
+        {
+          if (OperationsOnScreen[z] != undefined)
           {
-            OperationsOnScreen[i].drawingLine = false;
+            for (let o = 0; o < OperationsOnScreen[z].inp.length; o++)
+            {
+              if(OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
+              {
+                p2 = {x: OperationsOnScreen[z].inp[o].x, y: OperationsOnScreen[z].inp[o].y}
+              }
+              if (mouseIsPressed && OperationsOnScreen[z].inp[o].mouseOverBall() && !OperationsOnScreen[z].inp[o].connected)
+              {
+                if (z === i)
+                {
+                  break;
+                }
+              
+                OperationsOnScreen[i].drawingLine = false;
+                OperationsOnScreen[z].inp[o].connected = true;
+                OperationsOnScreen[z].inp[o].connectedTo = OperationsOnScreen[i].id
+                //OperationsOnScreen[i].out.connectedTo = OperationsOnScreen[z].id;
+                LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
+              }
+              if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
+              {
+                OperationsOnScreen[i].drawingLine = false;
+              }
+            }
           }
         }
+        bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
+        noStroke()
       }
-      bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
-      noStroke()
     }
   }
 
@@ -93,8 +102,6 @@ function draw()
 
 function GenerateOperator(x,y,w,h,col,type)
 {
-  let originX = width / 2 + random(-50, 50)
-  let originY = height / 2 + random(-50,50)
   fill(col)
 
   if (mouseOverRect(x,y,w,h))
@@ -107,22 +114,22 @@ function GenerateOperator(x,y,w,h,col,type)
       switch (type)
       {
         case "Plus":
-          OperationsOnScreen[OperationsOnScreen.length] = new Plus(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Plus(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
           break;
         case "Minus":
-          OperationsOnScreen[OperationsOnScreen.length] = new Minus(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Minus(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
           break;
         case "Multiply":
-          OperationsOnScreen[OperationsOnScreen.length] = new Mult(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Mult(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
           break;
         case "Divide":
-          OperationsOnScreen[OperationsOnScreen.length] = new Div(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Div(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
           break;
         case "Input":
-          OperationsOnScreen[OperationsOnScreen.length] = new Input(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Input(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
           break;
         case "Result":
-          OperationsOnScreen[OperationsOnScreen.length] = new Result(originX, originY, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Result(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
       }
 
       console.log(OperationsOnScreen)

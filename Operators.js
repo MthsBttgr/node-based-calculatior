@@ -14,6 +14,7 @@ class Operator
     this.isMoving = false;
 
     this.col = color(255,60,150);
+    this.selected = false;
 
     this.id = id;
 
@@ -35,23 +36,36 @@ class Operator
     }
   }
 
+  Selected()
+  {
+    // Selects and deselects and highlights
+    if (this.mouseOverOp() || this.selected)
+    {
+      fill(100,200)
+
+      if(mouseIsPressed || this.selected)
+      {
+        this.selected = true;
+        fill(75,200)
+      }
+      rect(this.x - 10, this.y - 10, this.w + 20, this.h + 20,5)
+    }
+    if (mouseIsPressed && !this.mouseOverOp())
+    {
+      this.selected = false;
+    }
+    //
+    
+    if (this.selected && keyIsPressed && keyCode === DELETE)
+    {
+      OperationsOnScreen.splice(this.id,1,undefined)
+      console.log(OperationsOnScreen)
+    }
+  }
+
   //draws the operator and makes it move when mouse is pressed
   showOp()
   {
-    fill(this.col)
-    rect(this.x,this.y,this.w,this.h, 5)
-
-    fill(0)
-    text(this.tekst, this.x + this.w/2, this.y + this.h / 2)
-
-    //drawing input and output points
-    for (let i = 0; i < this.inp.length; i++)
-    {
-        this.inp[i].showBall(this.x, this.y + (this.h / 3) * (i+1))
-    }
-    this.out.showBall(this.x+this.w, this.y+this.h/2)
-    //
-
     //moving the operator correctly
     if (this.mouseOverOp() && !this.isMoving)
     {
@@ -70,6 +84,26 @@ class Operator
       this.x = mouseX + this.mousediffposX;
       this.y = mouseY + this.mousediffposY;
     }
+    //
+
+    //selectes the box if mouse is pressed over it
+    this.Selected()
+    //
+
+    //draws the box with text in it
+    fill(this.col)
+    rect(this.x,this.y,this.w,this.h, 5)
+
+    fill(0)
+    text(this.tekst, this.x + this.w/2, this.y + this.h / 2)
+    //
+
+    //drawing input and output points
+    for (let i = 0; i < this.inp.length; i++)
+    {
+        this.inp[i].showBall(this.x, this.y + (this.h / 3) * (i+1))
+    }
+    this.out.showBall(this.x+this.w, this.y+this.h/2)
     //
   }
 }
@@ -160,8 +194,11 @@ class Input extends Operator
     this.inp.size(90, 15)
   }
 
+
   showOp()
   {
+    this.Selected()
+
     fill(this.col)
     rect(this.x,this.y,this.w,this.h, 5)
 
@@ -215,6 +252,8 @@ class Result extends Operator
 
   showOp()
   {
+    this.Selected()
+
     fill(this.col)
     rect(this.x,this.y,this.w,this.h, 5)
 
