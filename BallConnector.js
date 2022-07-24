@@ -7,7 +7,7 @@ class BallConnector
         this.d = 10;
 
         this.connected = false;
-        this.connectedTo;
+        this.connectedTo = [];
 
         this.drawingLine = false;
 

@@ -58,8 +58,38 @@ class Operator
     
     if (this.selected && keyIsPressed && keyCode === DELETE)
     {
-      OperationsOnScreen.splice(this.id,1,undefined)
-      console.log(OperationsOnScreen)
+      if (this.out.connected)
+      {
+        for (let i = 0; i < this.out.connectedTo.length; i ++)
+        {
+          OperationsOnScreen[this.out.connectedTo[i][0]].inp[this.out.connectedTo[i][1]].connected = false;
+          OperationsOnScreen[this.out.connectedTo[i][0]].inp[this.out.connectedTo[i][1]].connectedTo = [];
+          console.log(OperationsOnScreen[this.out.connectedTo[i][0]].inp)
+        }
+      }
+
+      for (let i = 0; i < this.inp.length; i++)
+      {
+        if (this.inp[i].connected)
+        {
+          OperationsOnScreen[this.inp[i].connectedTo].out.connected = false;
+          OperationsOnScreen[this.inp[i].connectedTo].out.connectedTo = [];
+        }
+      }
+
+      for (let i = 0; i < LinesBetweenOps.length; i++)
+      {
+        if (LinesBetweenOps[i].includes(this.id))
+        {
+          console.log(true);
+          LinesBetweenOps.splice(i,1,undefined)
+        }
+      }
+
+      LinesBetweenOps = LinesBetweenOps.filter(function(arr){if (arr != undefined){return arr}})
+      console.log(LinesBetweenOps)
+
+      OperationsOnScreen.splice(this.id, 1, undefined)
     }
   }
 
@@ -84,11 +114,6 @@ class Operator
       this.x = mouseX + this.mousediffposX;
       this.y = mouseY + this.mousediffposY;
     }
-    //
-
-    //selectes the box if mouse is pressed over it
-    this.Selected()
-    //
 
     //draws the box with text in it
     fill(this.col)
@@ -194,11 +219,37 @@ class Input extends Operator
     this.inp.size(90, 15)
   }
 
+  Selected()
+  {
+    // Selects and deselects and highlights
+    if (this.mouseOverOp() || this.selected)
+    {
+      fill(100,200)
+
+      if(mouseIsPressed || this.selected)
+      {
+        this.selected = true;
+        fill(75,200)
+      }
+      rect(this.x - 10, this.y - 10, this.w + 20, this.h + 20,5)
+    }
+    if (mouseIsPressed && !this.mouseOverOp())
+    {
+      this.selected = false;
+    }
+    //
+    
+    if (this.selected && keyIsPressed && keyCode === DELETE)
+    {
+      OperationsOnScreen.splice(this.id,1,undefined)
+      this.inp.remove()
+      console.log(OperationsOnScreen)
+    }
+  }
 
   showOp()
   {
     this.Selected()
-
     fill(this.col)
     rect(this.x,this.y,this.w,this.h, 5)
 
@@ -238,6 +289,7 @@ class Input extends Operator
     return float(this.inp.value())
   }
 }
+
 class Result extends Operator
 {
   constructor(x,y,id)
@@ -252,8 +304,6 @@ class Result extends Operator
 
   showOp()
   {
-    this.Selected()
-
     fill(this.col)
     rect(this.x,this.y,this.w,this.h, 5)
 
