@@ -3,18 +3,22 @@ LinesBetweenOps = []
 
 let drawingLine = false;
 let generatedOperator = false;
+let scale = 1
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  cnv = createCanvas(windowWidth, windowHeight);
+  cnv.mouseWheel(changeScale)
+
+  translate(width / 2, height / 2)
   noStroke()
 
-  OperationsOnScreen[0] = new Result(500,250,0)
+  OperationsOnScreen[0] = new Result(0,0,0)
 }
 
 function draw() 
-{
+{  
   background(50);
-  frameRate(60)
+  //translate(width / 2, height / 2)
 
   for (let i = 0; i < OperationsOnScreen.length; i++)
   {
@@ -81,14 +85,12 @@ function draw()
     stroke(100)
     noFill()
 
-    if (OperationsOnScreen[LinesBetweenOps[i][0]] != undefined && OperationsOnScreen[LinesBetweenOps[i][1]] != undefined)
-    {
-      let d = dist(OperationsOnScreen[LinesBetweenOps[i][0]].out.x, 0, OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, 0)
-      let p1 = {x: OperationsOnScreen[LinesBetweenOps[i][0]].out.x, y: OperationsOnScreen[LinesBetweenOps[i][0]].out.y}
-      let p2 = {x:OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, y: OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].y}
-      
-      bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
-    }
+    let d = dist(OperationsOnScreen[LinesBetweenOps[i][0]].out.x, 0, OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, 0)
+    let p1 = {x: OperationsOnScreen[LinesBetweenOps[i][0]].out.x, y: OperationsOnScreen[LinesBetweenOps[i][0]].out.y}
+    let p2 = {x:OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, y: OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].y}
+    
+    bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
+
     noStroke()
   }
 
@@ -154,5 +156,17 @@ function mouseOverRect(x,y,w,h)
   if (mouseX > x && mouseX < (x + w) && mouseY > y && mouseY < (y + h))
   {
     return true;
+  }
+}
+
+function changeScale(event)
+{
+  if (event.deltaY < 0)
+  {
+    scale /= 0.9
+  }
+  else 
+  {
+    scale *= 0.9
   }
 }

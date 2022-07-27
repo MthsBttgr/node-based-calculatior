@@ -25,6 +25,6 @@ class BallConnector
         this.x = x;
         this.y = y;
         fill(this.col)
-        circle(this.x,this.y,this.d)
+        circle(this.x,this.y,this.d * scale)
     }
 }
