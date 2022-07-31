@@ -30,8 +30,9 @@ class Operator
   //returns true if mouse is over the operator
   mouseOverOp()
   {
-    if(mouseX < (this.x + this.w) * scale && mouseX > this.x * scale && mouseY < (this.y + this.h) * scale && mouseY > this.y * scale)
+    if((mouseX - width / 2) < (this.x + this.w) * scale + deltaX && (mouseX - width / 2) > this.x * scale + deltaX && (mouseY - height/ 2) < (this.y + this.h) * scale + deltaY && (mouseY - height/ 2) > this.y * scale + deltaY)
     {
+      movingOperator = true;
       return true;
     }
   }
@@ -48,7 +49,7 @@ class Operator
         this.selected = true;
         fill(75,200)
       }
-      rect((this.x - 10) * scale, (this.y - 10) * scale, (this.w + 20) * scale, (this.h + 20) * scale,5)
+      rect((this.x - 10) * scale + deltaX, (this.y - 10) * scale + deltaY, (this.w + 20) * scale, (this.h + 20) * scale,5)
     }
     if (mouseIsPressed && !this.mouseOverOp())
     {
@@ -99,8 +100,8 @@ class Operator
     //moving the operator correctly
     if (this.mouseOverOp() && !this.isMoving)
     {
-      this.mousediffposX = (this.x * scale - mouseX) ;
-      this.mousediffposY = (this.y * scale - mouseY);
+      this.mousediffposX = (this.x * scale - (mouseX - width / 2)) ;
+      this.mousediffposY = (this.y * scale - (mouseY - height/ 2));
     }
     
     if(!mouseIsPressed)
@@ -111,24 +112,25 @@ class Operator
     if((mouseIsPressed && this.mouseOverOp()) || this.isMoving)
     {
       this.isMoving = true;
-      this.x = (mouseX + this.mousediffposX) / scale;
-      this.y = (mouseY + this.mousediffposY) / scale;
+      this.x = ((mouseX - width / 2) + this.mousediffposX) / scale;
+      this.y = ((mouseY - height/ 2) + this.mousediffposY) / scale;
     }
 
     //draws the box with text in it
     fill(this.col)
-    rect(this.x * scale,this.y * scale, this.w * scale, this.h * scale, 5)
+    rect(this.x * scale + deltaX, this.y * scale + deltaY, this.w * scale, this.h * scale, 5 * scale)
 
     fill(0)
-    text(this.tekst, (this.x + this.w/2) * scale, (this.y + this.h / 2) * scale)
+    textSize(20 * scale)
+    text(this.tekst, (this.x + this.w/2) * scale + deltaX, (this.y + this.h / 2) * scale + deltaY)
     //
 
     //drawing input and output points
     for (let i = 0; i < this.inp.length; i++)
     {
-        this.inp[i].showBall(this.x * scale, (this.y + (this.h / 3) * (i+1)) * scale)
+        this.inp[i].showBall(this.x * scale + deltaX, (this.y + (this.h / 3) * (i+1)) * scale + deltaY)
     }
-    this.out.showBall((this.x + this.w) * scale, (this.y + this.h / 2) * scale)
+    this.out.showBall((this.x + this.w) * scale + deltaX, (this.y + this.h / 2) * scale + deltaY)
     //
   }
 }
@@ -215,8 +217,8 @@ class Input extends Operator
     this.tekst = "Input:"
 
     this.inp = createInput('')
-    this.inp.position(x + 5, y + 25)
-    this.inp.size(90, 15)
+    this.inp.position(x + 5 + width / 2, y + 25 + height / 2)
+    this.inp.size(90 * scale, 15 * scale)
   }
 
   Selected()
@@ -231,7 +233,7 @@ class Input extends Operator
         this.selected = true;
         fill(75,200)
       }
-      rect((this.x - 10) * scale, (this.y - 10) * scale, (this.w + 20) * scale, (this.h + 20) * scale,5)
+      rect((this.x - 10) * scale + deltaX, (this.y - 10) * scale + deltaY, (this.w + 20) * scale, (this.h + 20) * scale,5)
     }
     if (mouseIsPressed && !this.mouseOverOp())
     {
@@ -255,7 +257,6 @@ class Input extends Operator
       {
         if (LinesBetweenOps[i].includes(this.id))
         {
-          console.log(true);
           LinesBetweenOps.splice(i,1,undefined)
         }
       }
@@ -271,23 +272,28 @@ class Input extends Operator
   {
     this.Selected()
     fill(this.col)
-    rect(this.x * scale,this.y * scale,this.w * scale,this.h * scale, 5)
+    rect(this.x * scale + deltaX, this.y * scale + deltaY, this.w * scale, this.h * scale, 5 * scale)
 
     fill(0)
-    text(this.tekst, (this.x + 30) * scale, (this.y + 10) * scale)
+    textSize(20 * scale)
+    text(this.tekst, (this.x + 30) * scale + deltaX, (this.y + 10) * scale + deltaY)
 
-    this.inp.position((this.x + 5) * scale, (this.y + 25) * scale)
+    this.inp.position((this.x + 5 ) * scale + width / 2 + deltaX, (this.y + 25 ) * scale + height / 2 + deltaY)
+    this.inp.size(90 * scale, 15 * scale)
+    this.inp.style('font-size', 15 * scale + 'px')
+    this.inp.style('padding', 2 * scale + 'px')
+    this.inp.style('border', '0px')
 
 
     //drawing output point
-    this.out.showBall((this.x + this.w) * scale, (this. y + this.h / 2) * scale)
+    this.out.showBall((this.x + this.w) * scale + deltaX, (this. y + this.h / 2) * scale + deltaY)
     //
 
     //moving the operator correctly
     if (this.mouseOverOp() && !this.isMoving)
     {
-      this.mousediffposX = (this.x * scale - mouseX) ;
-      this.mousediffposY = (this.y * scale - mouseY);
+      this.mousediffposX = (this.x * scale - (mouseX - width / 2)) ;
+      this.mousediffposY = (this.y * scale - (mouseY - height/ 2));
     }
     
     if(!mouseIsPressed)
@@ -298,8 +304,8 @@ class Input extends Operator
     if((mouseIsPressed && this.mouseOverOp()) || this.isMoving)
     {
       this.isMoving = true;
-      this.x = (mouseX + this.mousediffposX) / scale;
-      this.y = (mouseY + this.mousediffposY) / scale;
+      this.x = ((mouseX - width / 2) + this.mousediffposX) / scale;
+      this.y = ((mouseY - height/ 2) + this.mousediffposY) / scale;
     }
     //
   }
@@ -337,7 +343,7 @@ class Result extends Operator
         this.selected = true;
         fill(75,200)
       }
-      rect((this.x - 10) * scale, (this.y - 10) * scale, (this.w + 20) * scale, (this.h + 20) * scale,5)
+      rect((this.x - 10) * scale + deltaX, (this.y - 10) * scale + deltaY, (this.w + 20) * scale, (this.h + 20) * scale,5)
     }
     if (mouseIsPressed && !this.mouseOverOp())
     {
@@ -374,13 +380,14 @@ class Result extends Operator
   showOp()
   {
     fill(this.col)
-    rect(this.x * scale, this.y * scale, this.w * scale, this.h * scale, 5)
+    rect(this.x * scale + deltaX, this.y * scale + deltaY, this.w * scale, this.h * scale, 5 * scale)
 
     fill(0)
-    text(this.tekst, (this.x + 30) * scale, (this.y + 10) * scale)
+    textSize(20 * scale)
+    text(this.tekst, (this.x + 30) * scale + deltaX, (this.y + 10) * scale + deltaY)
 
     //drawing input point
-    this.inp[0].showBall(this.x * scale, (this.y + this.h / 2) * scale)
+    this.inp[0].showBall(this.x * scale + deltaX, (this.y + this.h / 2) * scale + deltaY)
     //
 
     push()
@@ -390,15 +397,15 @@ class Result extends Operator
       fill(0)
       let result = OperationsOnScreen[this.inp[0].connectedTo].compute()
 
-      text(result, (this.x + 5) * scale, (this.y + 30) * scale)
+      text(result, (this.x + 5) * scale + deltaX, (this.y + 30) * scale + deltaY)
     }
     pop()
 
     //moving the operator correctly
     if (this.mouseOverOp() && !this.isMoving)
     {
-      this.mousediffposX = (this.x * scale - mouseX) ;
-      this.mousediffposY = (this.y * scale - mouseY);
+      this.mousediffposX = (this.x * scale - (mouseX - width / 2)) ;
+      this.mousediffposY = (this.y * scale - (mouseY - height/ 2));
     }
     
     if(!mouseIsPressed)
@@ -409,8 +416,8 @@ class Result extends Operator
     if((mouseIsPressed && this.mouseOverOp()) || this.isMoving)
     {
       this.isMoving = true;
-      this.x = (mouseX + this.mousediffposX) / scale;
-      this.y = (mouseY + this.mousediffposY) / scale;
+      this.x = ((mouseX - width / 2) + this.mousediffposX) / scale;
+      this.y = ((mouseY - height/ 2) + this.mousediffposY) / scale;
     }
     //
   }

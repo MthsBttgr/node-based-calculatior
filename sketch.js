@@ -3,7 +3,10 @@ LinesBetweenOps = []
 
 let drawingLine = false;
 let generatedOperator = false;
-let scale = 1
+let scale = 1;
+let deltaX = 0;
+let deltaY = 0;
+let movingOperator = false;
 
 function setup() {
   cnv = createCanvas(windowWidth, windowHeight);
@@ -18,7 +21,10 @@ function setup() {
 function draw() 
 {  
   background(50);
-  //translate(width / 2, height / 2)
+  moveCanvas()
+
+  push()
+  translate(width / 2, height / 2)
 
   for (let i = 0; i < OperationsOnScreen.length; i++)
   {
@@ -35,11 +41,11 @@ function draw()
       {
         OperationsOnScreen[i].drawingLine = true;
         stroke(100)
-        strokeWeight(3)
+        strokeWeight(3 * scale)
         noFill()
-        let d = dist(OperationsOnScreen[i].out.x, 0, mouseX, 0)
+        let d = dist(OperationsOnScreen[i].out.x, 0, (mouseX - width / 2), 0)
         let p1 = {x: OperationsOnScreen[i].out.x, y: OperationsOnScreen[i].out.y}
-        let p2 = {x: mouseX, y: mouseY}
+        let p2 = {x: (mouseX - width / 2), y: (mouseY - height / 2)}
         
         for (let z = 0; z < OperationsOnScreen.length; z++)
         {
@@ -80,10 +86,12 @@ function draw()
     }
   }
 
+  stroke(100)
+  noFill()
+  strokeWeight(3 * scale)
   for (let i = 0; i < LinesBetweenOps.length; i++)
   {
-    stroke(100)
-    noFill()
+    
 
     let d = dist(OperationsOnScreen[LinesBetweenOps[i][0]].out.x, 0, OperationsOnScreen[LinesBetweenOps[i][1]].inp[LinesBetweenOps[i][2]].x, 0)
     let p1 = {x: OperationsOnScreen[LinesBetweenOps[i][0]].out.x, y: OperationsOnScreen[LinesBetweenOps[i][0]].out.y}
@@ -91,8 +99,10 @@ function draw()
     
     bezier(p1.x, p1.y, p1.x + d/2, p1.y, p2.x - d/2, p2.y, p2.x, p2.y)
 
-    noStroke()
+    
   }
+  noStroke()
+  pop()
 
   fill(100)
   rect(0,height - 100, width, 100)
@@ -124,22 +134,22 @@ function GenerateOperator(x,y,w,h,col,type)
       switch (type)
       {
         case "Plus":
-          OperationsOnScreen[OperationsOnScreen.length] = new Plus(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Plus((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
           break;
         case "Minus":
-          OperationsOnScreen[OperationsOnScreen.length] = new Minus(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Minus((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
           break;
         case "Multiply":
-          OperationsOnScreen[OperationsOnScreen.length] = new Mult(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Mult((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
           break;
         case "Divide":
-          OperationsOnScreen[OperationsOnScreen.length] = new Div(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Div((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
           break;
         case "Input":
-          OperationsOnScreen[OperationsOnScreen.length] = new Input(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Input((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
           break;
         case "Result":
-          OperationsOnScreen[OperationsOnScreen.length] = new Result(mouseX - 60, mouseY - 25, OperationsOnScreen.length)
+          OperationsOnScreen[OperationsOnScreen.length] = new Result((mouseX - width / 2) - 60, (mouseY - height / 2) - 25, OperationsOnScreen.length)
       }
 
       console.log(OperationsOnScreen)
@@ -168,5 +178,18 @@ function changeScale(event)
   else 
   {
     scale *= 0.9
+  }
+}
+
+function moveCanvas()
+{
+  if (!mouseIsPressed)
+  {
+    movingOperator = false;
+  }
+  if (mouseIsPressed && !movingOperator)
+  {
+    deltaX += mouseX - pmouseX
+    deltaY += mouseY - pmouseY
   }
 }
