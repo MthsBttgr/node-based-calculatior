@@ -70,8 +70,6 @@ function draw()
                 OperationsOnScreen[i].out.connected = true;
                 OperationsOnScreen[i].out.connectedTo.push([OperationsOnScreen[z].id, o]);
                 LinesBetweenOps.push([OperationsOnScreen[i].id, OperationsOnScreen[z].id, o]);
-
-                console.log(LinesBetweenOps)
               }
               if (mouseIsPressed && !(OperationsOnScreen[z].inp[o].mouseOverBall() || OperationsOnScreen[i].out.mouseOverBall()))
               {

@@ -48,6 +48,16 @@ class Operator
       {
         this.selected = true;
         fill(75,200)
+/*
+        OperationsOnScreen.push(OperationsOnScreen[this.id])
+        OperationsOnScreen[OperationsOnScreen.length-1].id = OperationsOnScreen.length - 1
+        OperationsOnScreen.splice(this.id, 1)
+
+        for (let i = this.id + 1; i < OperationsOnScreen.length; i++)
+        {
+          OperationsOnScreen[i].id -= 1
+        }
+        */
       }
       rect((this.x - 10) * scale + deltaX, (this.y - 10) * scale + deltaY, (this.w + 20) * scale, (this.h + 20) * scale,5)
     }
@@ -86,11 +96,11 @@ class Operator
           LinesBetweenOps.splice(i,1,undefined)
         }
       }
-
+      OperationsOnScreen.splice(this.id, 1, undefined)
       LinesBetweenOps = LinesBetweenOps.filter(function(arr){if (arr != undefined){return arr}})
       console.log(LinesBetweenOps)
 
-      OperationsOnScreen.splice(this.id, 1, undefined)
+      
     }
   }
 
